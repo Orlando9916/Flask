@@ -1,0 +1,32 @@
+from flask import Flask, json, request, jsonify
+
+app = Flask(__name__)
+with open('books.json') as json_data:
+
+    data = json.load(json_data)
+
+#@app.route("/")
+#def cross():
+#    return "<h1>Hello World!<h1>"
+with open('books.json') as f:
+    books_data = json.load(f)
+
+@app.route("/titles")
+def get_titles():
+    result = []
+    for book in data['books']:
+        result.append(book['title'])
+    return result
+
+@app.route("/titles/<isbn>")
+def get_book_from_isbn(isbn=None):
+    if not isbn:
+        result = []
+        for book in data['books']:
+            result.append(book['title'])
+        return result
+    else:
+        for book in data['books']:
+            if book['isbn'] == isbn:
+                return jsonify(book)
+        return "Not found", 404
